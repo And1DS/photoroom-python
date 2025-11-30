@@ -2,6 +2,8 @@
 
 A modern, fully-typed Python SDK for the [PhotoRoom API](https://www.photoroom.com/api). Remove backgrounds, edit images with AI, and enhance product photos with a simple Python interface.
 
+📖 **[View Full Documentation](https://and1ds.github.io/photoroom-python/docs.html)**
+
 ## Features
 
 - **Background Removal**: Remove backgrounds with award-winning AI
