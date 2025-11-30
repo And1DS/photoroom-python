@@ -1,0 +1,2004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhotoRoom Python SDK Documentation</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #8b5cf6;
+            --bg-color: #0f172a;
+            --bg-light: #1e293b;
+            --bg-lighter: #334155;
+            --text-color: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --code-bg: #1e293b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: var(--bg-color);
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-light);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 2rem 0;
+        }
+
+        .logo {
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .nav {
+            list-style: none;
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            padding: 0 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav a {
+            display: block;
+            padding: 0.5rem 1.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav a:hover {
+            color: var(--text-color);
+            background: var(--bg-lighter);
+            border-left-color: var(--primary-color);
+        }
+
+        .nav a.active {
+            color: var(--primary-color);
+            background: var(--bg-lighter);
+            border-left-color: var(--primary-color);
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            margin-left: 280px;
+            padding: 3rem;
+            max-width: 1200px;
+        }
+
+        h1, h2, h3, h4 {
+            color: var(--text-color);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-top: 0;
+        }
+
+        h2 {
+            font-size: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        h4 {
+            font-size: 1.25rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+
+        /* Code Blocks */
+        pre {
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        pre code {
+            color: #e2e8f0;
+        }
+
+        .code-block {
+            position: relative;
+        }
+
+        .code-label {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Inline code */
+        p code, li code, td code {
+            background: var(--bg-lighter);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.875em;
+            color: var(--primary-color);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: var(--bg-light);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--bg-lighter);
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        td {
+            color: var(--text-muted);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .badge-get {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .badge-post {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .badge-required {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .badge-optional {
+            background: var(--bg-lighter);
+            color: var(--text-muted);
+        }
+
+        /* Alert Boxes */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--primary-color);
+            color: var(--text-color);
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--warning-color);
+            color: var(--text-color);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--success-color);
+            color: var(--text-color);
+        }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-card h4 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        li {
+            margin: 0.5rem 0;
+            color: var(--text-muted);
+        }
+
+        /* Links */
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg-lighter);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--border-color);
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: #c678dd; }
+        .string { color: #98c379; }
+        .comment { color: #5c6370; font-style: italic; }
+        .function { color: #61afef; }
+        .number { color: #d19a66; }
+        .operator { color: #56b6c2; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>PhotoRoom SDK</h1>
+                <p>Python Documentation</p>
+            </div>
+            <nav class="nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Getting Started</div>
+                    <a href="#introduction" class="active">Introduction</a>
+                    <a href="#installation">Installation</a>
+                    <a href="#quick-start">Quick Start</a>
+                    <a href="#authentication">Authentication</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Core Methods</div>
+                    <a href="#remove-background">remove_background()</a>
+                    <a href="#edit-image">edit_image()</a>
+                    <a href="#get-account">get_account()</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Advanced Features</div>
+                    <a href="#ai-backgrounds">AI Backgrounds</a>
+                    <a href="#shadows-lighting">Shadows & Lighting</a>
+                    <a href="#text-removal">Text Removal</a>
+                    <a href="#upscaling">Upscaling</a>
+                    <a href="#beautify">Beautify Mode</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Reference</div>
+                    <a href="#retry-resilience">Retry & Resilience</a>
+                    <a href="#image-validation">Image Validation</a>
+                    <a href="#rate-limiting">Rate Limiting</a>
+                    <a href="#batch-processing">Batch Processing</a>
+                    <a href="#error-handling">Error Handling</a>
+                    <a href="#async-support">Async Support</a>
+                    <a href="#response-types">Response Types</a>
+                    <a href="#parameters">All Parameters</a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Introduction -->
+            <section id="introduction">
+                <h1>PhotoRoom Python SDK</h1>
+                <p>A fully-typed Python SDK for the PhotoRoom API. Provides tools for AI-powered background removal, image editing, and batch processing with both synchronous and asynchronous interfaces.</p>
+
+                <p>Features include automatic retry logic, configurable rate limiting, image validation, batch processing with progress tracking, and comprehensive error handling.</p>
+
+                <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Key Features</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.5rem; margin-bottom: 2rem;">
+                    <div style="padding: 0.5rem 0.75rem; border-left: 3px solid #4F46E5; font-size: 0.95rem;">
+                        <a href="#remove-background" style="text-decoration: none;"><strong style="color: #4F46E5;">Background Removal</strong></a> · AI background removal with customizable outputs
+                    </div>
+                    <div style="padding: 0.5rem 0.75rem; border-left: 3px solid #4F46E5; font-size: 0.95rem;">
+                        <a href="#edit-image" style="text-decoration: none;"><strong style="color: #4F46E5;">AI Editing</strong></a> · Generate backgrounds, shadows, lighting, and enhancements
+                    </div>
+                    <div style="padding: 0.5rem 0.75rem; border-left: 3px solid #4F46E5; font-size: 0.95rem;">
+                        <a href="#batch-processing" style="text-decoration: none;"><strong style="color: #4F46E5;">Batch Processing</strong></a> · Process multiple images concurrently with progress tracking
+                    </div>
+                    <div style="padding: 0.5rem 0.75rem; border-left: 3px solid #4F46E5; font-size: 0.95rem;">
+                        <a href="#async-support" style="text-decoration: none;"><strong style="color: #4F46E5;">Sync & Async</strong></a> · Full support for synchronous and asynchronous operations
+                    </div>
+                    <div style="padding: 0.5rem 0.75rem; border-left: 3px solid #4F46E5; font-size: 0.95rem;">
+                        <a href="#response-types" style="text-decoration: none;"><strong style="color: #4F46E5;">Type Safe</strong></a> · Complete type hints for IDE support and error detection
+                    </div>
+                    <div style="padding: 0.5rem 0.75rem; border-left: 3px solid #4F46E5; font-size: 0.95rem;">
+                        <a href="#retry-resilience" style="text-decoration: none;"><strong style="color: #4F46E5;">Retry Logic</strong></a> · Automatic retry with exponential backoff for failed requests
+                    </div>
+                    <div style="padding: 0.5rem 0.75rem; border-left: 3px solid #4F46E5; font-size: 0.95rem;">
+                        <a href="#rate-limiting" style="text-decoration: none;"><strong style="color: #4F46E5;">Rate Limiting</strong></a> · Built-in rate limiting to prevent API throttling
+                    </div>
+                    <div style="padding: 0.5rem 0.75rem; border-left: 3px solid #4F46E5; font-size: 0.95rem;">
+                        <a href="#image-validation" style="text-decoration: none;"><strong style="color: #4F46E5;">Image Validation</strong></a> · Automatic validation and format conversion
+                    </div>
+                </div>
+            </section>
+
+            <!-- Installation -->
+            <section id="installation">
+                <h2>Installation</h2>
+                <p>Install the PhotoRoom SDK using pip:</p>
+                <div class="code-block">
+                    <pre><code><span class="comment"># Install from PyPI</span>
+pip install photoroom
+
+<span class="comment"># Or with poetry</span>
+poetry add photoroom</code></pre>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>Requirements:</strong> Python 3.9 or higher
+                </div>
+            </section>
+
+            <!-- Quick Start -->
+            <section id="quick-start">
+                <h2>Quick Start</h2>
+                <p>Get started with PhotoRoom in just a few lines of code:</p>
+
+                <div class="code-block">
+                    <span class="code-label">Python</span>
+                    <pre><code><span class="keyword">from</span> photoroom <span class="keyword">import</span> PhotoRoomClient
+
+<span class="comment"># Initialize client</span>
+client = PhotoRoomClient(api_key=<span class="string">"your_api_key"</span>)
+
+<span class="comment"># Remove background</span>
+result = client.remove_background(<span class="string">"photo.jpg"</span>)
+result.save(<span class="string">"output.png"</span>)
+
+<span class="comment"># Add AI background</span>
+result = client.edit_image(
+    image_file=<span class="string">"photo.jpg"</span>,
+    background_prompt=<span class="string">"on a beach at sunset"</span>
+)
+result.save(<span class="string">"enhanced.png"</span>)</code></pre>
+                </div>
+            </section>
+
+            <!-- Authentication -->
+            <section id="authentication">
+                <h2>Authentication</h2>
+                <p>Get your API key from the <a href="https://app.photoroom.com/api" target="_blank">PhotoRoom API Dashboard</a>.</p>
+
+                <h3>Option 1: Direct API Key</h3>
+                <div class="code-block">
+                    <pre><code><span class="keyword">from</span> photoroom <span class="keyword">import</span> PhotoRoomClient
+
+client = PhotoRoomClient(api_key=<span class="string">"your_api_key"</span>)</code></pre>
+                </div>
+
+                <h3>Option 2: Environment Variable</h3>
+                <div class="code-block">
+                    <pre><code><span class="comment"># Set environment variable</span>
+<span class="keyword">export</span> PHOTOROOM_API_KEY=your_api_key
+
+<span class="comment"># Python code</span>
+<span class="keyword">from</span> photoroom <span class="keyword">import</span> PhotoRoomClient
+
+client = PhotoRoomClient()  <span class="comment"># Automatically uses env var</span></code></pre>
+                </div>
+
+                <h3>Sandbox API Keys</h3>
+                <div class="alert alert-warning">
+                    <strong>⚠️ Sandbox Limitations:</strong> If you're using a sandbox API key (starts with <code>sandbox_</code>), some endpoints like <code>get_account()</code> may not be available. The SDK will show a warning when a sandbox key is detected. For full functionality, use a production API key.
+                </div>
+
+                <div class="code-block">
+                    <pre><code><span class="comment"># Check if using sandbox key</span>
+<span class="keyword">if</span> client.is_sandbox:
+    <span class="function">print</span>(<span class="string">"Using sandbox API key - some features may be limited"</span>)</code></pre>
+                </div>
+            </section>
+
+            <!-- Remove Background -->
+            <section id="remove-background">
+                <h2>remove_background()</h2>
+                <span class="badge badge-post">POST</span>
+                <span class="badge" style="background: #334155; color: #e2e8f0;">/v1/segment</span>
+
+                <p>Remove background from an image using PhotoRoom's award-winning AI.</p>
+
+                <h3>Basic Usage</h3>
+                <div class="code-block">
+                    <pre><code><span class="comment"># Simple background removal</span>
+result = client.remove_background(<span class="string">"photo.jpg"</span>)
+result.save(<span class="string">"output.png"</span>)
+
+<span class="comment"># With white background</span>
+result = client.remove_background(
+    <span class="string">"photo.jpg"</span>,
+    bg_color=<span class="string">"white"</span>,
+    output_file=<span class="string">"output.png"</span>
+)
+
+<span class="comment"># High-quality with cropping</span>
+result = client.remove_background(
+    <span class="string">"photo.jpg"</span>,
+    size=<span class="string">"hd"</span>,
+    crop=<span class="keyword">True</span>,
+    format=<span class="string">"png"</span>
+)</code></pre>
+                </div>
+
+                <h3>Parameters</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th>Default</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>image_file</code> <span class="badge badge-required">Required</span></td>
+                            <td>str | Path | bytes</td>
+                            <td>-</td>
+                            <td>Path to image file or binary image data</td>
+                        </tr>
+                        <tr>
+                            <td><code>format</code></td>
+                            <td>"png" | "jpg" | "webp"</td>
+                            <td>"png"</td>
+                            <td>Output image format</td>
+                        </tr>
+                        <tr>
+                            <td><code>channels</code></td>
+                            <td>"rgba" | "alpha"</td>
+                            <td>"rgba"</td>
+                            <td>Output channels (color+alpha or alpha only)</td>
+                        </tr>
+                        <tr>
+                            <td><code>bg_color</code></td>
+                            <td>str</td>
+                            <td>None</td>
+                            <td>Background color (hex or name: "white", "FF0000")</td>
+                        </tr>
+                        <tr>
+                            <td><code>size</code></td>
+                            <td>"preview" | "medium" | "hd" | "full"</td>
+                            <td>"full"</td>
+                            <td>Output size (0.25MP to 36MP)</td>
+                        </tr>
+                        <tr>
+                            <td><code>crop</code></td>
+                            <td>bool</td>
+                            <td>False</td>
+                            <td>Crop to cutout border (remove transparent pixels)</td>
+                        </tr>
+                        <tr>
+                            <td><code>despill</code></td>
+                            <td>bool</td>
+                            <td>False</td>
+                            <td>Remove colored reflections from green screen</td>
+                        </tr>
+                        <tr>
+                            <td><code>output_file</code></td>
+                            <td>str | Path</td>
+                            <td>None</td>
+                            <td>Optional path to save result</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Returns</h3>
+                <p><code>ImageResponse</code> - Contains processed image data and metadata</p>
+            </section>
+
+            <!-- Edit Image -->
+            <section id="edit-image">
+                <h2>edit_image()</h2>
+                <span class="badge badge-get">GET</span>
+                <span class="badge badge-post">POST</span>
+                <span class="badge" style="background: #334155; color: #e2e8f0;">/v2/edit</span>
+
+                <p>Edit images with AI-powered transformations. Supports 50+ parameters for complete control.</p>
+
+                <h3>Basic Usage</h3>
+                <div class="code-block">
+                    <pre><code><span class="comment"># White background with soft shadow</span>
+result = client.edit_image(
+    image_file=<span class="string">"product.jpg"</span>,
+    background_color=<span class="string">"white"</span>,
+    shadow_mode=<span class="string">"ai.soft"</span>,
+    padding=<span class="number">0.1</span>
+)
+
+<span class="comment"># AI-generated background</span>
+result = client.edit_image(
+    image_file=<span class="string">"person.jpg"</span>,
+    background_prompt=<span class="string">"on a beach at sunset"</span>
+)
+
+<span class="comment"># Advanced: lighting + shadow + custom size</span>
+result = client.edit_image(
+    image_file=<span class="string">"product.jpg"</span>,
+    background_color=<span class="string">"F5F5F5"</span>,
+    lighting_mode=<span class="string">"ai.auto"</span>,
+    shadow_mode=<span class="string">"ai.soft"</span>,
+    padding=<span class="string">"15%"</span>,
+    output_size=<span class="string">"2048x2048"</span>,
+    export_format=<span class="string">"png"</span>,
+    export_dpi=<span class="number">300</span>
+)</code></pre>
+                </div>
+
+                <h3>Core Parameters</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>image_file</code></td>
+                            <td>str | Path | bytes</td>
+                            <td>Image file for POST request</td>
+                        </tr>
+                        <tr>
+                            <td><code>image_url</code></td>
+                            <td>str</td>
+                            <td>Image URL for GET request (mutually exclusive with image_file)</td>
+                        </tr>
+                        <tr>
+                            <td><code>remove_background</code></td>
+                            <td>bool</td>
+                            <td>Remove background (default: True)</td>
+                        </tr>
+                        <tr>
+                            <td><code>output_file</code></td>
+                            <td>str | Path</td>
+                            <td>Optional path to save result</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="alert alert-info">
+                    <strong>💡 Tip:</strong> See <a href="#parameters">All Parameters</a> section for the complete list of 50+ available parameters.
+                </div>
+            </section>
+
+            <!-- Get Account -->
+            <section id="get-account">
+                <h2>get_account()</h2>
+                <span class="badge badge-get">GET</span>
+                <span class="badge" style="background: #334155; color: #e2e8f0;">/v2/account</span>
+
+                <p>Get account information and remaining image quota.</p>
+
+                <h3>Usage</h3>
+                <div class="code-block">
+                    <pre><code>account = client.get_account()
+
+<span class="function">print</span>(<span class="string">f"Plan: <span class="operator">{</span>account.plan<span class="operator">}</span>"</span>)
+<span class="function">print</span>(<span class="string">f"Images: <span class="operator">{</span>account.images.available<span class="operator">}</span>/<span class="operator">{</span>account.images.subscription<span class="operator">}</span>"</span>)</code></pre>
+                </div>
+
+                <h3>Returns</h3>
+                <p><code>AccountInfo</code> object with:</p>
+                <ul>
+                    <li><code>plan</code> (str) - Plan name (e.g., "Plus", "Basic")</li>
+                    <li><code>images.available</code> (int) - Remaining images in quota</li>
+                    <li><code>images.subscription</code> (int) - Total images in subscription</li>
+                </ul>
+            </section>
+
+            <!-- AI Backgrounds -->
+            <section id="ai-backgrounds">
+                <h2>AI Backgrounds</h2>
+                <p>Generate photorealistic backgrounds from text prompts using advanced AI.</p>
+
+                <h3>Text-to-Background</h3>
+                <div class="code-block">
+                    <pre><code><span class="comment"># Generate background from prompt</span>
+result = client.edit_image(
+    image_file=<span class="string">"product.jpg"</span>,
+    background_prompt=<span class="string">"professional studio with soft lighting"</span>,
+    shadow_mode=<span class="string">"ai.soft"</span>
+)
+
+<span class="comment"># Use seed for reproducible results</span>
+result = client.edit_image(
+    image_file=<span class="string">"product.jpg"</span>,
+    background_prompt=<span class="string">"on a wooden table"</span>,
+    background_seed=<span class="number">42</span>  <span class="comment"># Same seed = same background</span>
+)
+
+<span class="function">print</span>(<span class="string">f"Background seed: <span class="operator">{</span>result.background_seed<span class="operator">}</span>"</span>)</code></pre>
+                </div>
+
+                <h3>Background with Guidance Image</h3>
+                <div class="code-block">
+                    <pre><code><span class="comment"># Use reference image to guide AI</span>
+result = client.edit_image(
+    image_file=<span class="string">"product.jpg"</span>,
+    background_prompt=<span class="string">"professional studio"</span>,
+    background_guidance_image_file=<span class="string">"reference.jpg"</span>,
+    background_guidance_scale=<span class="number">0.8</span>  <span class="comment"># 0-1: how closely to match reference</span>
+)</code></pre>
+                </div>
+
+                <h3>Background Parameters</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>background_prompt</code></td>
+                            <td>Text description for AI background generation</td>
+                        </tr>
+                        <tr>
+                            <td><code>background_color</code></td>
+                            <td>Solid color background (hex or name)</td>
+                        </tr>
+                        <tr>
+                            <td><code>background_image_file</code></td>
+                            <td>Custom background image file</td>
+                        </tr>
+                        <tr>
+                            <td><code>background_seed</code></td>
+                            <td>Seed for reproducible backgrounds</td>
+                        </tr>
+                        <tr>
+                            <td><code>background_blur_mode</code></td>
+                            <td>"gaussian" or "bokeh" blur effect</td>
+                        </tr>
+                        <tr>
+                            <td><code>background_blur_radius</code></td>
+                            <td>Blur amount (0-0.05)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Shadows & Lighting -->
+            <section id="shadows-lighting">
+                <h2>Shadows & Lighting</h2>
+
+                <h3>Shadow Generation</h3>
+                <div class="code-block">
+                    <pre><code><span class="comment"># Soft shadow (recommended for products)</span>
+result = client.edit_image(
+    image_file=<span class="string">"product.jpg"</span>,
+    background_color=<span class="string">"white"</span>,
+    shadow_mode=<span class="string">"ai.soft"</span>
+)
+
+<span class="comment"># Hard shadow for dramatic effect</span>
+result = client.edit_image(
+    image_file=<span class="string">"product.jpg"</span>,
+    shadow_mode=<span class="string">"ai.hard"</span>
+)
+
+<span class="comment"># Floating shadow</span>
+result = client.edit_image(
+    image_file=<span class="string">"product.jpg"</span>,
+    shadow_mode=<span class="string">"ai.floating"</span>
+)</code></pre>
+                </div>
+
+                <h3>Lighting Adjustment</h3>
+                <div class="code-block">
+                    <pre><code><span class="comment"># Automatic lighting enhancement</span>
+result = client.edit_image(
+    image_file=<span class="string">"product.jpg"</span>,
+    lighting_mode=<span class="string">"ai.auto"</span>
+)
+
+<span class="comment"># Preserve hue and saturation</span>
+result = client.edit_image(
+    image_file=<span class="string">"product.jpg"</span>,
+    lighting_mode=<span class="string">"ai.preserve-hue-and-saturation"</span>
+)</code></pre>
+                </div>
+            </section>
+
+            <!-- Text Removal -->
+            <section id="text-removal">
+                <h2>Text Removal</h2>
+                <p>Remove unwanted text from images (watermarks, logos, signs).</p>
+
+                <div class="code-block">
+                    <pre><code><span class="comment"># Remove artificial text (watermarks, logos)</span>
+result = client.edit_image(
+    image_file=<span class="string">"watermarked.jpg"</span>,
+    text_removal_mode=<span class="string">"ai.artificial"</span>,
+    remove_background=<span class="keyword">False</span>
+)
+
+<span class="comment"># Remove natural text (signs, clothing)</span>
+result = client.edit_image(
+    image_file=<span class="string">"photo.jpg"</span>,
+    text_removal_mode=<span class="string">"ai.natural"</span>,
+    remove_background=<span class="keyword">False</span>
+)
+
+<span class="comment"># Remove all text</span>
+result = client.edit_image(
+    image_file=<span class="string">"image.jpg"</span>,
+    text_removal_mode=<span class="string">"ai.all"</span>,
+    remove_background=<span class="keyword">False</span>
+)
+
+<span class="comment"># Check how many texts were detected</span>
+<span class="function">print</span>(<span class="string">f"Removed <span class="operator">{</span>result.texts_detected<span class="operator">}</span> texts"</span>)</code></pre>
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>⚠️ Note:</strong> Set <code>remove_background=False</code> when using text removal to preserve the original background.
+                </div>
+            </section>
+
+            <!-- Upscaling -->
+            <section id="upscaling">
+                <h2>Upscaling</h2>
+                <p>Upscale images up to 4x their original size with AI enhancement.</p>
+
+                <div class="code-block">
+                    <pre><code><span class="comment"># Fast 4x upscaling (max input: 1000x1000px)</span>
+result = client.edit_image(
+    image_file=<span class="string">"small_image.jpg"</span>,
+    upscale_mode=<span class="string">"ai.fast"</span>,
+    remove_background=<span class="keyword">False</span>
+)
+
+<span class="comment"># High-quality upscaling (max input: 512x512px, slower)</span>
+result = client.edit_image(
+    image_file=<span class="string">"small_image.jpg"</span>,
+    upscale_mode=<span class="string">"ai.slow"</span>,
+    remove_background=<span class="keyword">False</span>
+)</code></pre>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>Size Limits:</strong>
+                    <ul style="margin: 0.5rem 0 0 0;">
+                        <li><code>ai.fast</code>: Input max 1000×1000 pixels</li>
+                        <li><code>ai.slow</code>: Input max 512×512 pixels</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Beautify -->
+            <section id="beautify">
+                <h2>Beautify Mode</h2>
+                <p>Enhance product images with AI beautification.</p>
+
+                <div class="code-block">
+                    <pre><code><span class="comment"># Auto beautify for product images</span>
+result = client.edit_image(
+    image_file=<span class="string">"raw_product.jpg"</span>,
+    beautify_mode=<span class="string">"ai.auto"</span>,
+    background_color=<span class="string">"white"</span>,
+    shadow_mode=<span class="string">"ai.soft"</span>
+)
+
+<span class="comment"># Food-specific beautification</span>
+result = client.edit_image(
+    image_file=<span class="string">"food.jpg"</span>,
+    beautify_mode=<span class="string">"ai.food"</span>
+)</code></pre>
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>⚠️ Important:</strong>
+                    <ul style="margin: 0.5rem 0 0 0;">
+                        <li>Beautifier does not preserve original background</li>
+                        <li>Use with <code>remove_background=True</code> (default)</li>
+                        <li>Designed for products/food, not suitable for humans or pets</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Retry & Resilience -->
+            <section id="retry-resilience">
+                <h2>Retry & Resilience</h2>
+                <p>The SDK automatically retries failed requests with exponential backoff to handle transient server errors, making your application more resilient to temporary network issues and server hiccups.</p>
+
+                <h3>Default Behavior</h3>
+                <p>By default, the SDK provides robust retry logic:</p>
+
+                <ul>
+                    <li>Retries up to <strong>3 times</strong> on server errors (500, 502, 503, 504)</li>
+                    <li>Uses <strong>exponential backoff</strong> with jitter (waits ~1s, ~2s, ~4s between retries)</li>
+                    <li>Does <strong>not retry</strong> on client errors (400, 401, 403, etc.)</li>
+                    <li>Automatically retries on <strong>network errors</strong> (connection failures, timeouts)</li>
+                </ul>
+
+                <div class="code-block">
+                    <span class="code-label">Python</span>
+                    <pre><code><span class="comment"># Default retry behavior - no configuration needed</span>
+client = PhotoRoomClient(api_key=<span class="string">"your_api_key"</span>)
+
+<span class="comment"># If the server returns 500/503, the SDK will retry automatically</span>
+result = client.remove_background(<span class="string">"photo.jpg"</span>)</code></pre>
+                </div>
+
+                <h3>Custom Retry Configuration</h3>
+                <p>Customize retry behavior to match your application's requirements:</p>
+
+                <div class="code-block">
+                    <span class="code-label">Python</span>
+                    <pre><code>client = PhotoRoomClient(
+    api_key=<span class="string">"your_api_key"</span>,
+    max_retries=<span class="number">5</span>,                          <span class="comment"># Retry up to 5 times</span>
+    retry_backoff=<span class="number">3.0</span>,                      <span class="comment"># 3x backoff (3s, 9s, 27s, ...)</span>
+    retry_on_status=[<span class="number">500</span>, <span class="number">502</span>, <span class="number">503</span>, <span class="number">504</span>]    <span class="comment"># Which status codes to retry</span>
+)</code></pre>
+                </div>
+
+                <h3>Disable Retries</h3>
+                <p>For scenarios where you need maximum control or want to implement your own retry logic:</p>
+
+                <div class="code-block">
+                    <span class="code-label">Python</span>
+                    <pre><code><span class="comment"># Disable automatic retries</span>
+client = PhotoRoomClient(
+    api_key=<span class="string">"your_api_key"</span>,
+    max_retries=<span class="number">0</span>
+)</code></pre>
+                </div>
+
+                <h3>How It Works</h3>
+                <p>The retry mechanism uses exponential backoff with random jitter to prevent thundering herd problems:</p>
+
+                <div class="alert alert-info">
+                    <strong>Example Retry Sequence:</strong>
+                    <ol style="margin: 0.5rem 0 0 0;">
+                        <li><strong>First attempt</strong> fails with 503 Service Unavailable</li>
+                        <li><strong>Wait ~1 second</strong> (with random jitter: 0.75-1.25s)</li>
+                        <li><strong>Second attempt</strong> fails with 503</li>
+                        <li><strong>Wait ~2 seconds</strong> (with random jitter: 1.5-2.5s)</li>
+                        <li><strong>Third attempt</strong> succeeds ✓</li>
+                    </ol>
+                </div>
+
+                <p>If all retry attempts are exhausted, the SDK raises the appropriate exception (e.g., <code>PhotoRoomServerError</code>) that you can catch and handle.</p>
+
+                <div class="code-block">
+                    <span class="code-label">Python</span>
+                    <pre><code><span class="keyword">from</span> photoroom <span class="keyword">import</span> PhotoRoomClient, PhotoRoomServerError
+
+client = PhotoRoomClient(api_key=<span class="string">"your_api_key"</span>, max_retries=<span class="number">3</span>)
+
+<span class="keyword">try</span>:
+    result = client.remove_background(<span class="string">"photo.jpg"</span>)
+<span class="keyword">except</span> PhotoRoomServerError:
+    <span class="comment"># Retry exhausted - all 3 attempts failed</span>
+    <span class="function">print</span>(<span class="string">"Server is experiencing issues, please try again later"</span>)</code></pre>
+                </div>
+
+                <h3>Best Practices</h3>
+                <ul>
+                    <li><strong>Production systems:</strong> Use the default retry configuration (3 retries) for good balance between resilience and speed</li>
+                    <li><strong>Critical operations:</strong> Increase retries to 5-7 for operations that must succeed</li>
+                    <li><strong>Real-time systems:</strong> Reduce retries to 1-2 or disable to minimize latency</li>
+                    <li><strong>Batch processing:</strong> Consider implementing your own retry logic with longer delays</li>
+                </ul>
+            </section>
+
+            <!-- Image Validation -->
+            <section id="image-validation">
+                <h2>Image Validation</h2>
+                <p>The SDK provides comprehensive image validation to ensure images meet PhotoRoom API requirements before upload. This helps catch issues early and can automatically fix common problems.</p>
+
+                <h3>API Limits</h3>
+                <p>PhotoRoom has the following limits:</p>
+                <ul>
+                    <li><strong>Maximum file size:</strong> 30 MB</li>
+                    <li><strong>Maximum dimension:</strong> 5000 pixels on widest side</li>
+                    <li><strong>Recommended megapixels:</strong> 25 MP for optimal performance</li>
+                    <li><strong>Supported formats:</strong> PNG, JPEG/JPG, WebP</li>
+                    <li><strong>Upscale mode limits:</strong>
+                        <ul>
+                            <li><code>ai.fast</code>: Maximum 1000×1000 pixels input</li>
+                            <li><code>ai.slow</code>: Maximum 512×512 pixels input</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3>Default Behavior</h3>
+                <p>By default, validation is <strong>enabled</strong> for all image uploads:</p>
+
+                <div class="code-block">
+                    <span class="code-label">Python</span>
+                    <pre><code><span class="comment"># Validation is ON by default</span>
+client = PhotoRoomClient(api_key=<span class="string">"your_api_key"</span>)
+
+<span class="comment"># This will validate the image meets API requirements</span>
+result = client.remove_background(<span class="string">"photo.jpg"</span>)</code></pre>
+                </div>
+
+                <div class="alert alert-success">
+                    <strong>Validation checks:</strong>
+                    <ul style="margin: 0.5rem 0 0 0;">
+                        <li>✅ File format is supported (PNG, JPEG, WebP)</li>
+                        <li>✅ File size ≤ 30 MB</li>
+                        <li>✅ Resolution ≤ 5000 pixels on widest side</li>
+                        <li>✅ Upscale mode dimension limits (if applicable)</li>
+                    </ul>
+                </div>
+
+                <p>If validation fails, an <code>ImageValidationError</code> is raised with a helpful message:</p>
+
+                <div class="code-block">
+                    <span class="code-label">Python</span>
+                    <pre><code><span class="keyword">from</span> photoroom <span class="keyword">import</span> ImageValidationError
+
+<span class="keyword">try</span>:
+    result = client.remove_background(<span class="string">"huge_image.jpg"</span>)
+<span class="keyword">except</span> ImageValidationError <span class="keyword">as</span> e:
+    <span class="function">print</span>(<span class="string">f"Validation failed: <span class="operator">{</span>e<span class="operator">}</span>"</span>)
+    <span class="comment"># Example: "Image size (35.2MB) exceeds maximum allowed size (30MB).</span>
+    <span class="comment">#           Consider using auto_resize=True to automatically resize large images."</span></code></pre>
+                </div>
+
+                <h3>Auto-Resize Large Images</h3>
+                <p>Enable <code>auto_resize</code> to automatically resize images that exceed size or dimension limits:</p>
+
+                <div class="code-block">
+                    <span class="code-label">Python</span>
+                    <pre><code><span class="comment"># Auto-resize images that are too large</span>
+client = PhotoRoomClient(
+    api_key=<span class="string">"your_api_key"</span>,
+    validate_images=<span class="keyword">True</span>,
+    auto_resize=<span class="keyword">True</span>
+)
+
+<span class="comment"># This 50MB, 8000×6000 image will be automatically resized</span>
+<span class="comment"># to fit within 30MB and 5000px limits</span>
+result = client.remove_background(<span class="string">"huge_photo.jpg"</span>)</code></pre>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>How it works:</strong>
+                    <ul style="margin: 0.5rem 0 0 0;">
+                        <li>Images exceeding 5000px are resized to fit within the dimension limit</li>
+                        <li>Images exceeding 30MB are compressed using binary search optimization</li>
+                        <li>Aspect ratio is always preserved</li>
+                        <li>Quality is maintained at 85% JPEG quality</li>
+                        <li>Requires <strong>Pillow</strong> library: <code>pip install Pillow</code></li>
+                    </ul>
+                </div>
+
+                <h3>Auto-Convert Unsupported Formats</h3>
+                <p>Enable <code>auto_convert</code> to automatically convert unsupported formats to WebP:</p>
+
+                <div class="code-block">
+                    <span class="code-label">Python</span>
+                    <pre><code><span class="comment"># Auto-convert HEIC, TIFF, BMP, etc. to WebP</span>
+client = PhotoRoomClient(
+    api_key=<span class="string">"your_api_key"</span>,
+    validate_images=<span class="keyword">True</span>,
+    auto_convert=<span class="keyword">True</span>
+)
+
+<span class="comment"># These formats will be automatically converted to WebP:</span>
+<span class="comment"># HEIC, HEIF, TIFF, TIF, BMP, GIF, ICO</span>
+result = client.remove_background(<span class="string">"photo.heic"</span>)  <span class="comment"># Converted to WebP</span>
+result = client.remove_background(<span class="string">"scan.tiff"</span>)   <span class="comment"># Converted to WebP</span></code></pre>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Target format</strong></td>
+                            <td>WebP (excellent compression and quality)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Quality</strong></td>
+                            <td>90% (configurable in validation module)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Transparency</strong></td>
+                            <td>Preserved for RGBA images</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Requirement</strong></td>
+                            <td>Pillow library: <code>pip install Pillow</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Combined: Auto-Resize + Auto-Convert</h3>
+                <p>Enable both for maximum compatibility:</p>
+
+                <div class="code-block">
+                    <span class="code-label">Python</span>
+                    <pre><code><span class="comment"># Handle all image issues automatically</span>
+client = PhotoRoomClient(
+    api_key=<span class="string">"your_api_key"</span>,
+    validate_images=<span class="keyword">True</span>,
+    auto_resize=<span class="keyword">True</span>,
+    auto_convert=<span class="keyword">True</span>
+)
+
+<span class="comment"># This will:</span>
+<span class="comment"># 1. Convert HEIC to WebP</span>
+<span class="comment"># 2. Resize if needed to fit within limits</span>
+<span class="comment"># 3. Upload successfully</span>
+result = client.remove_background(<span class="string">"iphone_photo.heic"</span>)</code></pre>
+                </div>
+
+                <h3>Disable Validation</h3>
+                <p>For maximum control or when you're sure images are valid, disable validation:</p>
+
+                <div class="code-block">
+                    <span class="code-label">Python</span>
+                    <pre><code><span class="comment"># No validation - upload as-is</span>
+client = PhotoRoomClient(
+    api_key=<span class="string">"your_api_key"</span>,
+    validate_images=<span class="keyword">False</span>
+)
+
+<span class="comment"># Images are uploaded without any checks</span>
+result = client.remove_background(<span class="string">"photo.jpg"</span>)</code></pre>
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>⚠️ Warning:</strong> Disabling validation may cause API errors if images don't meet requirements.
+                </div>
+
+                <h3>Upscale Mode Validation</h3>
+                <p>When using upscale modes, the SDK automatically validates input dimensions:</p>
+
+                <div class="code-block">
+                    <span class="code-label">Python</span>
+                    <pre><code>client = PhotoRoomClient(api_key=<span class="string">"your_api_key"</span>, validate_images=<span class="keyword">True</span>)
+
+<span class="comment"># ai.fast requires input ≤ 1000×1000</span>
+<span class="keyword">try</span>:
+    result = client.edit_image(
+        image_file=<span class="string">"large_photo.jpg"</span>,  <span class="comment"># 2000×1500</span>
+        upscale_mode=<span class="string">"ai.fast"</span>
+    )
+<span class="keyword">except</span> ImageValidationError <span class="keyword">as</span> e:
+    <span class="function">print</span>(e)
+    <span class="comment"># "Image resolution (2000x1500) exceeds maximum for ai.fast upscale mode.</span>
+    <span class="comment">#  Maximum allowed: 1000x1000px."</span>
+
+<span class="comment"># ai.slow requires input ≤ 512×512</span>
+result = client.edit_image(
+    image_file=<span class="string">"small_photo.jpg"</span>,  <span class="comment"># 500×400</span>
+    upscale_mode=<span class="string">"ai.slow"</span>  <span class="comment"># ✓ Valid</span>
+)</code></pre>
+                </div>
+
+                <h3>Validation Error Types</h3>
+                <p>Common validation errors you may encounter:</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Error Message</th>
+                            <th>Cause</th>
+                            <th>Solution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>Unsupported image format: xyz</code></td>
+                            <td>Unknown file format</td>
+                            <td>Use PNG, JPEG, or WebP. Or enable <code>auto_convert</code> for HEIC/TIFF</td>
+                        </tr>
+                        <tr>
+                            <td><code>Image size (35.2MB) exceeds maximum</code></td>
+                            <td>File too large</td>
+                            <td>Enable <code>auto_resize=True</code> or compress manually</td>
+                        </tr>
+                        <tr>
+                            <td><code>Resolution exceeds maximum dimension</code></td>
+                            <td>Image too big (>5000px)</td>
+                            <td>Enable <code>auto_resize=True</code> or resize manually</td>
+                        </tr>
+                        <tr>
+                            <td><code>Exceeds maximum for ai.fast/slow</code></td>
+                            <td>Input too large for upscale mode</td>
+                            <td>Resize image or use different upscale mode</td>
+                        </tr>
+                        <tr>
+                            <td><code>Image data is empty</code></td>
+                            <td>No image data provided</td>
+                            <td>Check file exists and is readable</td>
+                        </tr>
+                        <tr>
+                            <td><code>PIL/Pillow is required</code></td>
+                            <td>Missing dependency for resize/convert</td>
+                            <td>Install with: <code>pip install Pillow</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Best Practices</h3>
+                <ul>
+                    <li><strong>Keep validation enabled</strong> - Catches issues before they become API errors</li>
+                    <li><strong>Enable auto-resize for user uploads</strong> - Handles photos from modern cameras/phones</li>
+                    <li><strong>Enable auto-convert for mobile apps</strong> - iOS HEIC photos are common</li>
+                    <li><strong>Install Pillow for full functionality:</strong>
+                        <div class="code-block" style="margin-top: 0.5rem;">
+                            <span class="code-label">Bash</span>
+                            <pre><code>pip install photoroom[validation]
+# or
+pip install Pillow</code></pre>
+                        </div>
+                    </li>
+                    <li><strong>Use appropriate upscale modes:</strong>
+                        <ul>
+                            <li><code>ai.fast</code> for quick 4x upscaling (input ≤ 1000×1000)</li>
+                            <li><code>ai.slow</code> for best quality (input ≤ 512×512)</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3>Production Configuration</h3>
+                <p>Recommended setup for production environments:</p>
+
+                <div class="code-block">
+                    <span class="code-label">Python</span>
+                    <pre><code><span class="keyword">from</span> photoroom <span class="keyword">import</span> PhotoRoomClient, ImageValidationError
+
+<span class="comment"># Recommended production setup</span>
+client = PhotoRoomClient(
+    api_key=<span class="string">"your_api_key"</span>,
+    validate_images=<span class="keyword">True</span>,      <span class="comment"># Catch issues early</span>
+    auto_resize=<span class="keyword">True</span>,          <span class="comment"># Handle large images</span>
+    auto_convert=<span class="keyword">True</span>,         <span class="comment"># Handle all formats</span>
+    max_retries=<span class="number">3</span>,             <span class="comment"># Retry on server errors</span>
+    timeout=<span class="number">120.0</span>              <span class="comment"># 2 minute timeout</span>
+)
+
+<span class="comment"># Robust error handling</span>
+<span class="keyword">try</span>:
+    result = client.remove_background(
+        user_uploaded_file,
+        bg_color=<span class="string">"white"</span>,
+        output_file=<span class="string">"output.png"</span>
+    )
+    <span class="function">print</span>(<span class="string">f"Success! Saved to output.png (<span class="operator">{</span>result.size_kb<span class="operator">}</span> KB)"</span>)
+<span class="keyword">except</span> ImageValidationError <span class="keyword">as</span> e:
+    <span class="function">print</span>(<span class="string">f"Image validation failed: <span class="operator">{</span>e<span class="operator">}</span>"</span>)
+<span class="keyword">except</span> Exception <span class="keyword">as</span> e:
+    <span class="function">print</span>(<span class="string">f"Processing failed: <span class="operator">{</span>e<span class="operator">}</span>"</span>)</code></pre>
+                </div>
+            </section>
+
+            <!-- Rate Limiting -->
+            <section id="rate-limiting">
+                <h2>Rate Limiting</h2>
+                <p>The SDK includes built-in rate limiting to help you stay within API rate limits and avoid overwhelming the service.</p>
+
+                <h3>How It Works</h3>
+                <p>Rate limiting uses a token bucket algorithm:</p>
+                <ul>
+                    <li>Tokens refill at the specified rate (e.g., 10 tokens/second for <code>rate_limit=10.0</code>)</li>
+                    <li>Each request consumes 1 token</li>
+                    <li>If no tokens available, the SDK either waits (default) or raises an error</li>
+                </ul>
+
+                <h3>Basic Usage</h3>
+                <div class="code-block">
+                    <span class="code-label">Python</span>
+                    <pre><code><span class="keyword">from</span> photoroom <span class="keyword">import</span> PhotoRoomClient
+
+<span class="comment"># Limit to 5 requests per second</span>
+client = PhotoRoomClient(
+    api_key=<span class="string">"your_api_key"</span>,
+    rate_limit=<span class="number">5.0</span>,  <span class="comment"># 5 requests/second</span>
+    rate_limit_strategy=<span class="string">"wait"</span>  <span class="comment"># Wait for tokens (default)</span>
+)
+
+<span class="comment"># Make requests - automatically rate limited</span>
+<span class="keyword">for</span> image <span class="keyword">in</span> image_list:
+    result = client.remove_background(image)
+    result.save(<span class="string">f"output_<span class="operator">{</span>image<span class="operator">}</span>"</span>)</code></pre>
+                </div>
+
+                <h3>Strategies</h3>
+
+                <h4>1. "wait" Strategy (Default)</h4>
+                <p>Automatically sleeps until tokens are available:</p>
+
+                <div class="code-block">
+                    <span class="code-label">Python</span>
+                    <pre><code>client = PhotoRoomClient(
+    api_key=<span class="string">"your_api_key"</span>,
+    rate_limit=<span class="number">10.0</span>,
+    rate_limit_strategy=<span class="string">"wait"</span>  <span class="comment"># Sleep until tokens available</span>
+)
+
+<span class="comment"># These will execute at max 10/second</span>
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="number">100</span>):
+    client.remove_background(<span class="string">f"image_<span class="operator">{</span>i<span class="operator">}</span>.jpg"</span>)</code></pre>
+                </div>
+
+                <h4>2. "error" Strategy</h4>
+                <p>Raises <code>RateLimitError</code> when rate limit exceeded:</p>
+
+                <div class="code-block">
+                    <span class="code-label">Python</span>
+                    <pre><code><span class="keyword">from</span> photoroom <span class="keyword">import</span> PhotoRoomClient
+<span class="keyword">from</span> photoroom.rate_limiter <span class="keyword">import</span> RateLimitError
+
+client = PhotoRoomClient(
+    api_key=<span class="string">"your_api_key"</span>,
+    rate_limit=<span class="number">10.0</span>,
+    rate_limit_strategy=<span class="string">"error"</span>  <span class="comment"># Raise exception</span>
+)
+
+<span class="keyword">try</span>:
+    <span class="comment"># Fast loop - will hit rate limit</span>
+    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="number">100</span>):
+        client.remove_background(<span class="string">f"image_<span class="operator">{</span>i<span class="operator">}</span>.jpg"</span>)
+<span class="keyword">except</span> RateLimitError <span class="keyword">as</span> e:
+    <span class="function">print</span>(<span class="string">f"Rate limit exceeded: <span class="operator">{</span>e<span class="operator">}</span>"</span>)
+    <span class="comment"># Handle rate limit (e.g., slow down, retry later)</span></code></pre>
+                </div>
+
+                <h3>Async Rate Limiting</h3>
+                <p>Rate limiting works with async clients too:</p>
+
+                <div class="code-block">
+                    <span class="code-label">Python</span>
+                    <pre><code><span class="keyword">import</span> asyncio
+<span class="keyword">from</span> photoroom <span class="keyword">import</span> PhotoRoomClient
+
+<span class="keyword">async def</span> <span class="function">process_images</span>():
+    <span class="keyword">async with</span> PhotoRoomClient(
+        api_key=<span class="string">"your_api_key"</span>,
+        async_mode=<span class="keyword">True</span>,
+        rate_limit=<span class="number">5.0</span>,
+        rate_limit_strategy=<span class="string">"wait"</span>
+    ) <span class="keyword">as</span> client:
+        <span class="comment"># Process images at max 5/second</span>
+        tasks = [
+            client.aremove_background(<span class="string">f"image_<span class="operator">{</span>i<span class="operator">}</span>.jpg"</span>)
+            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="number">20</span>)
+        ]
+        results = <span class="keyword">await</span> asyncio.gather(*tasks)
+
+asyncio.run(process_images())</code></pre>
+                </div>
+
+                <h3>Disable Rate Limiting</h3>
+                <p>Set <code>rate_limit=None</code> or <code>rate_limit=0</code> to disable:</p>
+
+                <div class="code-block">
+                    <span class="code-label">Python</span>
+                    <pre><code><span class="comment"># No rate limiting</span>
+client = PhotoRoomClient(
+    api_key=<span class="string">"your_api_key"</span>,
+    rate_limit=<span class="keyword">None</span>  <span class="comment"># Disabled</span>
+)</code></pre>
+                </div>
+
+                <h3>Best Practices</h3>
+                <ul>
+                    <li><strong>Conservative limits:</strong> Start with <code>rate_limit=5.0</code> and increase if needed</li>
+                    <li><strong>Monitor errors:</strong> Watch for 429 (Too Many Requests) errors</li>
+                    <li><strong>Combine with retries:</strong> Use both rate limiting and retry logic:
+                        <div class="code-block" style="margin-top: 0.5rem;">
+                            <span class="code-label">Python</span>
+                            <pre><code>client = PhotoRoomClient(
+    api_key=<span class="string">"your_api_key"</span>,
+    rate_limit=<span class="number">10.0</span>,       <span class="comment"># Prevent exceeding limits</span>
+    max_retries=<span class="number">3</span>,         <span class="comment"># Retry on transient errors</span>
+    rate_limit_strategy=<span class="string">"wait"</span>
+)</code></pre>
+                        </div>
+                    </li>
+                    <li><strong>Batch processing:</strong> For large batches, use conservative rate limits to avoid service disruption</li>
+                </ul>
+
+                <h3>Common Rate Limits</h3>
+                <p>Typical API rate limits (adjust based on your plan):</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Use Case</th>
+                            <th>Rate Limit</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Development</strong></td>
+                            <td><code>rate_limit=1.0</code></td>
+                            <td>1 request/second - Conservative for testing</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Production</strong></td>
+                            <td><code>rate_limit=10.0</code></td>
+                            <td>10 requests/second - Typical production use</td>
+                        </tr>
+                        <tr>
+                            <td><strong>High-volume</strong></td>
+                            <td><code>rate_limit=20.0</code></td>
+                            <td>20 requests/second - Large-scale processing</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="alert alert-info">
+                    <strong>Note:</strong> Check your PhotoRoom plan for specific rate limits. Adjust <code>rate_limit</code> accordingly to stay within your plan's constraints.
+                </div>
+            </section>
+
+            <!-- Batch Processing -->
+            <section id="batch-processing">
+                <h2>Batch Processing</h2>
+                <p>The SDK provides powerful batch processing capabilities to process multiple images efficiently with concurrency control, progress tracking, and error handling.</p>
+
+                <h3>Basic Usage</h3>
+                <pre><code class="language-python">from photoroom import PhotoRoomClient
+
+client = PhotoRoomClient(api_key="your-api-key")
+
+# Batch remove background from multiple images
+inputs = ["photo1.jpg", "photo2.jpg", "photo3.jpg"]
+result = client.batch_remove_background(
+    inputs,
+    bg_color="white",
+    max_workers=3  # Process 3 images concurrently
+)
+
+print(f"Processed {result.success_count}/{result.total} images")
+print(f"Success rate: {result.success_rate:.1%}")
+print(f"Total time: {result.total_time:.2f}s")</code></pre>
+
+                <h3>Async Batch Processing</h3>
+                <pre><code class="language-python">import asyncio
+from photoroom import PhotoRoomClient
+
+async def batch_process():
+    async with PhotoRoomClient(api_key="your-api-key", async_mode=True) as client:
+        inputs = ["photo1.jpg", "photo2.jpg", "photo3.jpg"]
+        result = await client.abatch_remove_background(
+            inputs,
+            bg_color="white",
+            max_concurrency=5  # Process up to 5 images concurrently
+        )
+
+        print(f"Processed {result.success_count}/{result.total} images")
+
+asyncio.run(batch_process())</code></pre>
+
+                <h3>Automatic Output Saving</h3>
+                <p>Save all processed images automatically with customizable filename patterns:</p>
+                <pre><code class="language-python">result = client.batch_remove_background(
+    ["photo1.jpg", "photo2.jpg", "photo3.jpg"],
+    bg_color="white",
+    output_dir="output/",
+    output_pattern="{index}_processed_{name}"  # e.g., "0_processed_photo1.jpg"
+)
+
+# Or use just the index
+result = client.batch_edit_image(
+    inputs,
+    background_prompt="on a beach",
+    output_dir="edited/",
+    output_pattern="{index}.png"  # e.g., "0.png", "1.png", "2.png"
+)</code></pre>
+
+                <h3>Progress Tracking</h3>
+                <p>Monitor progress with a callback function that provides real-time updates:</p>
+                <pre><code class="language-python">from photoroom import BatchProgress
+
+def progress_callback(progress: BatchProgress):
+    print(f"Progress: {progress.completed}/{progress.total} "
+          f"({progress.progress_percent:.1f}%) - "
+          f"Success: {progress.successful}, Failed: {progress.failed}")
+
+    if progress.estimated_remaining_seconds:
+        print(f"Estimated time remaining: {progress.estimated_remaining_seconds:.1f}s")
+
+result = client.batch_remove_background(
+    ["photo1.jpg", "photo2.jpg", "photo3.jpg"],
+    progress_callback=progress_callback
+)</code></pre>
+
+                <h3>Error Handling Strategies</h3>
+                <p>Control how errors are handled during batch processing:</p>
+                <pre><code class="language-python"># Continue on errors (default) - process all images even if some fail
+result = client.batch_remove_background(
+    inputs,
+    on_error="continue"
+)
+
+# Fail fast - stop on first error
+try:
+    result = client.batch_remove_background(
+        inputs,
+        on_error="fail_fast"
+    )
+except BatchError as e:
+    print(f"Batch failed: {e}")</code></pre>
+
+                <h3>Working with Results</h3>
+                <p>The <code>BatchResult</code> object provides comprehensive access to processing results:</p>
+                <pre><code class="language-python">result = client.batch_remove_background(["photo1.jpg", "photo2.jpg", "photo3.jpg"])
+
+# Check overall success
+if result.all_successful:
+    print("All images processed successfully!")
+
+# Get successful and failed results
+for item in result.successful:
+    print(f"Success: {item.input_file} -> {item.result.size_kb:.1f}KB")
+
+for item in result.failed:
+    print(f"Failed: {item.input_file} - Error: {item.error}")
+
+# Raise exception if any failed
+try:
+    result.raise_on_failure()
+except BatchPartialFailureError as e:
+    print(f"{e.successful_count} succeeded, {e.failed_count} failed")</code></pre>
+
+                <h3>Batch Edit Images</h3>
+                <p>Process multiple images with AI-powered editing operations:</p>
+                <pre><code class="language-python"># AI background generation for multiple images
+result = client.batch_edit_image(
+    ["product1.jpg", "product2.jpg", "product3.jpg"],
+    background_prompt="minimalist white studio background",
+    background_seed=42,  # Same background for all
+    padding="10%",
+    max_workers=3
+)</code></pre>
+
+                <h3>Statistics and Analysis</h3>
+                <p>Get detailed statistics about batch processing:</p>
+                <pre><code class="language-python">result = client.batch_remove_background(inputs, bg_color="white")
+
+stats = result.get_statistics()
+print(f"Total images: {stats['total']}")
+print(f"Successful: {stats['successful']}")
+print(f"Failed: {stats['failed']}")
+print(f"Success rate: {stats['success_rate']:.1%}")
+print(f"Total time: {stats['total_time_seconds']:.2f}s")
+print(f"Average time per image: {stats['average_time_per_item']:.2f}s")</code></pre>
+
+                <h3>Batch Processing with Rate Limiting</h3>
+                <p>Combine batch processing with rate limiting for optimal throughput:</p>
+                <pre><code class="language-python"># Limit to 10 requests/second across all batch operations
+client = PhotoRoomClient(
+    api_key="your-api-key",
+    rate_limit=10.0,
+    rate_limit_strategy="wait"
+)
+
+# Process 100 images with 5 workers
+# Rate limiter ensures we don't exceed 10 req/sec
+result = client.batch_remove_background(
+    images,
+    max_workers=5,
+    output_dir="output/"
+)</code></pre>
+
+                <h3>Batch Processing Parameters</h3>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>inputs</code></td>
+                            <td>List[str | Path | bytes]</td>
+                            <td>List of image inputs (file paths, Path objects, or binary data)</td>
+                        </tr>
+                        <tr>
+                            <td><code>max_workers</code></td>
+                            <td>int</td>
+                            <td>Maximum concurrent workers for sync processing (default: 5)</td>
+                        </tr>
+                        <tr>
+                            <td><code>max_concurrency</code></td>
+                            <td>int</td>
+                            <td>Maximum concurrent operations for async processing (default: 5)</td>
+                        </tr>
+                        <tr>
+                            <td><code>on_error</code></td>
+                            <td>str</td>
+                            <td>Error handling strategy: "continue" (default) or "fail_fast"</td>
+                        </tr>
+                        <tr>
+                            <td><code>progress_callback</code></td>
+                            <td>Callable[[BatchProgress], None]</td>
+                            <td>Optional callback function for progress updates</td>
+                        </tr>
+                        <tr>
+                            <td><code>output_dir</code></td>
+                            <td>str</td>
+                            <td>Optional directory to auto-save results</td>
+                        </tr>
+                        <tr>
+                            <td><code>output_pattern</code></td>
+                            <td>str</td>
+                            <td>Filename pattern (supports {index}, {name}). Default: "{index}_{name}"</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>BatchResult Properties</h3>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>total</code></td>
+                            <td>int</td>
+                            <td>Total number of items processed</td>
+                        </tr>
+                        <tr>
+                            <td><code>success_count</code></td>
+                            <td>int</td>
+                            <td>Number of successful items</td>
+                        </tr>
+                        <tr>
+                            <td><code>failure_count</code></td>
+                            <td>int</td>
+                            <td>Number of failed items</td>
+                        </tr>
+                        <tr>
+                            <td><code>success_rate</code></td>
+                            <td>float</td>
+                            <td>Success rate (0-1)</td>
+                        </tr>
+                        <tr>
+                            <td><code>all_successful</code></td>
+                            <td>bool</td>
+                            <td>True if all items succeeded</td>
+                        </tr>
+                        <tr>
+                            <td><code>any_failed</code></td>
+                            <td>bool</td>
+                            <td>True if any items failed</td>
+                        </tr>
+                        <tr>
+                            <td><code>successful</code></td>
+                            <td>List[BatchItemResult]</td>
+                            <td>List of successful results</td>
+                        </tr>
+                        <tr>
+                            <td><code>failed</code></td>
+                            <td>List[BatchItemResult]</td>
+                            <td>List of failed results</td>
+                        </tr>
+                        <tr>
+                            <td><code>total_time</code></td>
+                            <td>float</td>
+                            <td>Total processing time in seconds</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Best Practices</h3>
+                <div class="alert alert-info">
+                    <ul style="margin: 0; padding-left: 20px;">
+                        <li><strong>Concurrency Control:</strong> Set <code>max_workers</code> (sync) or <code>max_concurrency</code> (async) based on your system and rate limits</li>
+                        <li><strong>Rate Limiting:</strong> Always set appropriate rate limits to avoid API throttling</li>
+                        <li><strong>Error Handling:</strong> Use <code>on_error="continue"</code> for best-effort processing of large batches</li>
+                        <li><strong>Progress Tracking:</strong> Use callbacks for long-running batches to monitor progress</li>
+                        <li><strong>Output Management:</strong> Use <code>output_dir</code> and <code>output_pattern</code> for organized file management</li>
+                        <li><strong>Memory Management:</strong> For very large batches (1000+ images), consider processing in chunks</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Error Handling -->
+            <section id="error-handling">
+                <h2>Error Handling</h2>
+                <p>The SDK provides specific exceptions for different error types:</p>
+
+                <div class="code-block">
+                    <pre><code><span class="keyword">from</span> photoroom <span class="keyword">import</span> (
+    PhotoRoomError,
+    PhotoRoomBadRequest,
+    PhotoRoomPaymentError,
+    PhotoRoomAuthError,
+    PhotoRoomServerError,
+    ImageValidationError
+)
+
+<span class="keyword">try</span>:
+    result = client.remove_background(<span class="string">"photo.jpg"</span>)
+<span class="keyword">except</span> ImageValidationError <span class="keyword">as</span> e:
+    <span class="function">print</span>(<span class="string">f"Image validation failed: <span class="operator">{</span>e<span class="operator">}</span>"</span>)
+<span class="keyword">except</span> PhotoRoomAuthError:
+    <span class="function">print</span>(<span class="string">"Invalid API key"</span>)
+<span class="keyword">except</span> PhotoRoomPaymentError:
+    <span class="function">print</span>(<span class="string">"Quota exceeded - upgrade your plan"</span>)
+<span class="keyword">except</span> PhotoRoomBadRequest <span class="keyword">as</span> e:
+    <span class="function">print</span>(<span class="string">f"Invalid parameters: <span class="operator">{</span>e.message<span class="operator">}</span>"</span>)
+<span class="keyword">except</span> PhotoRoomServerError:
+    <span class="function">print</span>(<span class="string">"Server error, please retry"</span>)
+<span class="keyword">except</span> PhotoRoomError <span class="keyword">as</span> e:
+    <span class="function">print</span>(<span class="string">f"API error: <span class="operator">{</span>e<span class="operator">}</span>"</span>)</code></pre>
+                </div>
+
+                <h3>Exception Hierarchy</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Exception</th>
+                            <th>Status Code</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>PhotoRoomBadRequest</code></td>
+                            <td>400</td>
+                            <td>Invalid parameters or malformed request</td>
+                        </tr>
+                        <tr>
+                            <td><code>PhotoRoomPaymentError</code></td>
+                            <td>402</td>
+                            <td>Insufficient credits or quota exceeded</td>
+                        </tr>
+                        <tr>
+                            <td><code>PhotoRoomAuthError</code></td>
+                            <td>403</td>
+                            <td>Authentication failed or invalid API key</td>
+                        </tr>
+                        <tr>
+                            <td><code>PhotoRoomServerError</code></td>
+                            <td>500</td>
+                            <td>Server error (retry recommended)</td>
+                        </tr>
+                        <tr>
+                            <td><code>PhotoRoomError</code></td>
+                            <td>-</td>
+                            <td>Base exception (catch-all)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Async Support -->
+            <section id="async-support">
+                <h2>Async Support</h2>
+                <p>All methods have async equivalents for use with asyncio:</p>
+
+                <div class="code-block">
+                    <pre><code><span class="keyword">import</span> asyncio
+<span class="keyword">from</span> photoroom <span class="keyword">import</span> PhotoRoomClient
+
+<span class="keyword">async def</span> <span class="function">main</span>():
+    <span class="keyword">async with</span> PhotoRoomClient(async_mode=<span class="keyword">True</span>) <span class="keyword">as</span> client:
+        <span class="comment"># Remove background (async)</span>
+        result = <span class="keyword">await</span> client.remove_background(<span class="string">"photo.jpg"</span>)
+        result.save(<span class="string">"output.png"</span>)
+
+        <span class="comment"># Edit image (async)</span>
+        result = <span class="keyword">await</span> client.edit_image(
+            image_file=<span class="string">"photo.jpg"</span>,
+            background_prompt=<span class="string">"in a professional studio"</span>
+        )
+
+        <span class="comment"># Get account (async)</span>
+        account = <span class="keyword">await</span> client.get_account()
+        <span class="function">print</span>(<span class="string">f"Plan: <span class="operator">{</span>account.plan<span class="operator">}</span>"</span>)
+
+asyncio.run(main())</code></pre>
+                </div>
+
+                <div class="alert alert-success">
+                    <strong>✅ Async Methods:</strong> All sync methods have async equivalents: <code>remove_background()</code> → async, <code>edit_image()</code> → async, <code>get_account()</code> → async
+                </div>
+            </section>
+
+            <!-- Response Types -->
+            <section id="response-types">
+                <h2>Response Types</h2>
+
+                <h3>ImageResponse</h3>
+                <p>Returned by <code>remove_background()</code> and <code>edit_image()</code>:</p>
+
+                <div class="code-block">
+                    <pre><code>result = client.edit_image(image_file=<span class="string">"photo.jpg"</span>)
+
+<span class="comment"># Access image data</span>
+image_bytes = result.image_data  <span class="comment"># bytes</span>
+size_bytes = result.size         <span class="comment"># int (size in bytes)</span>
+size_kb = result.size_kb         <span class="comment"># float (size in KB)</span>
+
+<span class="comment"># Access metadata</span>
+seed = result.background_seed           <span class="comment"># int | None</span>
+texts = result.texts_detected           <span class="comment"># int | None</span>
+edit_url = result.edit_further_url      <span class="comment"># str | None</span>
+unsupported = result.unsupported_attributes  <span class="comment"># str | None</span>
+
+<span class="comment"># Save to file</span>
+result.save(<span class="string">"output.png"</span>)
+
+<span class="comment"># Get info</span>
+<span class="function">print</span>(result)  <span class="comment"># ImageResponse(size=123.4KB, metadata=['pr-ai-background-seed'])</span></code></pre>
+                </div>
+
+                <h3>AccountInfo</h3>
+                <p>Returned by <code>get_account()</code>:</p>
+
+                <div class="code-block">
+                    <pre><code>account = client.get_account()
+
+plan = account.plan                       <span class="comment"># str (e.g., "Plus")</span>
+available = account.images.available      <span class="comment"># int</span>
+total = account.images.subscription       <span class="comment"># int</span></code></pre>
+                </div>
+            </section>
+
+            <!-- All Parameters -->
+            <section id="parameters">
+                <h2>All Parameters Reference</h2>
+                <p>Complete list of all 50+ parameters available in <code>edit_image()</code>:</p>
+
+                <h3>Input</h3>
+                <table>
+                    <tr><td><code>image_file</code></td><td>Image file path or bytes (POST)</td></tr>
+                    <tr><td><code>image_url</code></td><td>Image URL (GET)</td></tr>
+                </table>
+
+                <h3>Background</h3>
+                <table>
+                    <tr><td><code>remove_background</code></td><td>Remove background (bool, default: True)</td></tr>
+                    <tr><td><code>background_color</code></td><td>Background color (hex or name)</td></tr>
+                    <tr><td><code>background_prompt</code></td><td>AI background generation prompt</td></tr>
+                    <tr><td><code>background_image_file</code></td><td>Custom background image file</td></tr>
+                    <tr><td><code>background_image_url</code></td><td>Custom background image URL</td></tr>
+                    <tr><td><code>background_blur_mode</code></td><td>"gaussian" | "bokeh"</td></tr>
+                    <tr><td><code>background_blur_radius</code></td><td>Blur radius (0-0.05)</td></tr>
+                    <tr><td><code>background_seed</code></td><td>Seed for reproducible backgrounds</td></tr>
+                    <tr><td><code>background_guidance_image_file</code></td><td>Guidance image file</td></tr>
+                    <tr><td><code>background_guidance_scale</code></td><td>Guidance strength (0-1)</td></tr>
+                    <tr><td><code>background_scaling</code></td><td>"fit" | "fill"</td></tr>
+                </table>
+
+                <h3>Enhancement</h3>
+                <table>
+                    <tr><td><code>lighting_mode</code></td><td>"ai.auto" | "ai.preserve-hue-and-saturation"</td></tr>
+                    <tr><td><code>shadow_mode</code></td><td>"ai.soft" | "ai.hard" | "ai.floating"</td></tr>
+                    <tr><td><code>beautify_mode</code></td><td>"ai.auto" | "ai.food"</td></tr>
+                    <tr><td><code>text_removal_mode</code></td><td>"ai.artificial" | "ai.natural" | "ai.all"</td></tr>
+                    <tr><td><code>upscale_mode</code></td><td>"ai.fast" | "ai.slow"</td></tr>
+                    <tr><td><code>uncrop_mode</code></td><td>"ai.auto"</td></tr>
+                    <tr><td><code>expand_mode</code></td><td>"ai.auto"</td></tr>
+                </table>
+
+                <h3>Positioning & Size</h3>
+                <table>
+                    <tr><td><code>padding</code></td><td>General padding (number, "30%", "100px")</td></tr>
+                    <tr><td><code>padding_top/bottom/left/right</code></td><td>Side-specific padding</td></tr>
+                    <tr><td><code>margin</code></td><td>General margin</td></tr>
+                    <tr><td><code>margin_top/bottom/left/right</code></td><td>Side-specific margin</td></tr>
+                    <tr><td><code>output_size</code></td><td>"auto" | "WIDTHxHEIGHT" | "originalImage" | "croppedSubject"</td></tr>
+                    <tr><td><code>max_width</code></td><td>Maximum output width</td></tr>
+                    <tr><td><code>max_height</code></td><td>Maximum output height</td></tr>
+                    <tr><td><code>horizontal_alignment</code></td><td>"left" | "center" | "right"</td></tr>
+                    <tr><td><code>vertical_alignment</code></td><td>"top" | "center" | "bottom"</td></tr>
+                    <tr><td><code>scaling</code></td><td>"fit" | "fill"</td></tr>
+                </table>
+
+                <h3>Export</h3>
+                <table>
+                    <tr><td><code>export_format</code></td><td>"png" | "jpeg" | "jpg" | "webp"</td></tr>
+                    <tr><td><code>export_dpi</code></td><td>DPI (72-1200)</td></tr>
+                    <tr><td><code>preserve_metadata</code></td><td>"never" | "xmp" | "exifSubset"</td></tr>
+                    <tr><td><code>output_file</code></td><td>Path to save result</td></tr>
+                </table>
+
+                <h3>Advanced</h3>
+                <table>
+                    <tr><td><code>segmentation_prompt</code></td><td>What to keep</td></tr>
+                    <tr><td><code>segmentation_negative_prompt</code></td><td>What to remove</td></tr>
+                    <tr><td><code>segmentation_mode</code></td><td>"keepSalientObject" | "ignoreSalientObject"</td></tr>
+                    <tr><td><code>template_id</code></td><td>Template UUID</td></tr>
+                    <tr><td><code>layers</code></td><td>Advanced layer composition (dict)</td></tr>
+                    <tr><td><code>keep_existing_alpha_channel</code></td><td>"auto" | "never"</td></tr>
+                </table>
+            </section>
+
+            <footer style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border-color); color: var(--text-muted); text-align: center;">
+                <p>PhotoRoom Python SDK Documentation • <a href="https://docs.photoroom.com" target="_blank">API Docs</a> • <a href="https://github.com/photoroom/photoroom-python" target="_blank">GitHub</a></p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                    // Update active state
+                    document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Update active nav item on scroll
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
